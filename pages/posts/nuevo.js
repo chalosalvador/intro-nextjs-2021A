@@ -2,8 +2,7 @@
 const NewPostPage = () => {
   return (
     <div>
-
-      Crar un nuevo post
+      Crear un nuevo post
     </div>
   );
 };

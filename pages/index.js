@@ -24,7 +24,7 @@ export default function Home() {
           height={144} // Desired size with correct aspect ratio
           width={144} // Desired size with correct aspect ratio
           placeholder="blur"
-          alt="Your Name"
+          alt="Limón"
         />
       </main>
     </div>
