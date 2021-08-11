@@ -13,6 +13,7 @@ export default function Home() {
       </Head>
 
       <main>
+        <p>Esta es la nueva funcionalidad.</p>
         <p>Este es mi index.</p>
 
         <p>Ir a <a href='/hola'>hola</a></p>
