@@ -1,5 +1,4 @@
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
 import api from "../../api";
 import Image from "next/image";
 import useSWR from "swr";

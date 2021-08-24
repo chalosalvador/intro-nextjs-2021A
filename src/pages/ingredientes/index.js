@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import api from "../../api";
 import Image from "next/image";
 import Link from "next/link";
@@ -37,15 +38,21 @@ const IngredientsPage = ({ ingredients }) => {
   );
 };
 
+IngredientsPage.propTypes = {
+  ingredients: PropTypes.array,
+};
+
 export default IngredientsPage;
 
-export async function getStaticProps(context) {
+export async function getStaticProps() {
   let ingredients = [];
   try {
     const response = await api.get("/ingredients");
     console.log("response", response);
     ingredients = response.data.data;
-  } catch (e) {}
+  } catch (e) {
+    console.log("e", e);
+  }
 
   return {
     props: {

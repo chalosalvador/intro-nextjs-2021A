@@ -1,13 +1,20 @@
 import { useForm } from "react-hook-form";
-import { useState } from "react";
-import api from "../api";
+import { useEffect, useState } from "react";
 import User from "../api/user";
+// import { yupResolver } from "@hookform/resolvers/yup";
+// import * as yup from "yup";
 
 const RegisterPage = () => {
   const { register, handleSubmit } = useForm();
   const [result, setResult] = useState("");
   const [errors, setErrors] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+
+  useEffect(() => {
+    if (userInfo) {
+      console.log("userInfo", userInfo);
+    }
+  }, [userInfo]);
 
   const onSubmit = async (formData) => {
     setUserInfo(null);
@@ -31,10 +38,14 @@ const RegisterPage = () => {
       if (response) {
         if (response.data.errors) {
           const errors = response.data.errors;
+          // const errorList = Object.values(errors);
           const errorList = [];
+
           for (let field in errors) {
-            errorList.push(errors[field]);
+            errorList.push(...errors[field]);
           }
+          console.log("errorList", errorList);
+
           setErrors(errorList);
         }
       }
