@@ -1,20 +1,41 @@
-import { useForm } from "react-hook-form";
-import { useEffect, useState } from "react";
+import { useForm, Controller } from "react-hook-form";
+import { useState } from "react";
 import User from "../api/user";
-// import { yupResolver } from "@hookform/resolvers/yup";
-// import * as yup from "yup";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+import { Button, Link as MuiLink, TextField } from "@material-ui/core";
+import Link from "next/link";
+
+const schema = yup.object().shape({
+  name: yup.string().required("Este campo obligatorio"),
+  email: yup
+    .string()
+    .email("Ingrese un correo válido")
+    .required("Este campo obligatorio"),
+  password: yup
+    .string()
+    .min(8, "Ingrese al menos 8 caracteres")
+    .required("Este campo obligatorio"),
+  password_confirmation: yup
+    .string()
+    .oneOf([yup.ref("password"), null], "Las claves no coinciden")
+    .required("Este campo obligatorio"),
+  editorial: yup.string().required("Este campo obligatorio"),
+  short_bio: yup.string().max(200).required("Este campo obligatorio"),
+});
 
 const RegisterPage = () => {
-  const { register, handleSubmit } = useForm();
+  const {
+    handleSubmit,
+    formState: { errors },
+    reset,
+    control,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
   const [result, setResult] = useState("");
-  const [errors, setErrors] = useState([]);
+  const [errorsList, setErrorsList] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
-
-  useEffect(() => {
-    if (userInfo) {
-      console.log("userInfo", userInfo);
-    }
-  }, [userInfo]);
 
   const onSubmit = async (formData) => {
     setUserInfo(null);
@@ -30,6 +51,7 @@ const RegisterPage = () => {
       setUserInfo(response.data);
 
       setResult("Usuario registrado correctamente");
+      reset();
     } catch (e) {
       console.log("e", e.response);
       const { response } = e;
@@ -39,14 +61,14 @@ const RegisterPage = () => {
         if (response.data.errors) {
           const errors = response.data.errors;
           // const errorList = Object.values(errors);
-          const errorList = [];
+          const newErrorList = [];
 
           for (let field in errors) {
-            errorList.push(...errors[field]);
+            newErrorList.push(...errors[field]);
           }
-          console.log("errorList", errorList);
+          console.log("errorList", newErrorList);
 
-          setErrors(errorList);
+          setErrorsList(newErrorList);
         }
       }
     }
@@ -54,40 +76,115 @@ const RegisterPage = () => {
 
   return (
     <div>
+      <div>
+        <p>
+          ¿Ya tienes una cuenta?{" "}
+          <Link href="/inicio-sesion" passHref>
+            <MuiLink>Iniciar sesión</MuiLink>
+          </Link>
+        </p>
+      </div>
       <form onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <input {...register("name")} placeholder="Nombre" />
-        </div>
-        <div>
-          <input
-            type="email"
-            {...register("email")}
-            placeholder="Correo electrónico"
+          <Controller
+            name="name"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Nombre"
+                variant="outlined"
+                size="small"
+              />
+            )}
           />
+          <p>{errors.name?.message}</p>
         </div>
         <div>
-          <input
-            type="password"
-            {...register("password")}
-            placeholder="Contraseña"
+          <Controller
+            name="email"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="email"
+                label="Correo electrónico"
+                variant="outlined"
+                size="small"
+              />
+            )}
           />
+          <p>{errors.email?.message}</p>
         </div>
         <div>
-          <input
-            type="password"
-            {...register("password_confirmation")}
-            placeholder="Confirme su contraseña"
+          <Controller
+            name="password"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="password"
+                label="Contraseña"
+                variant="outlined"
+                size="small"
+              />
+            )}
           />
+          <p>{errors.password?.message}</p>
         </div>
         <div>
-          <input
-            type="text"
-            {...register("editorial")}
-            placeholder="Editorial"
+          <Controller
+            name="password_confirmation"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                type="password"
+                label="Confirma tu contraseña"
+                variant="outlined"
+                size="small"
+              />
+            )}
           />
+          <p>{errors.password_confirmation?.message}</p>
         </div>
         <div>
-          <textarea {...register("short_bio")} placeholder="Biografía corta" />
+          <Controller
+            name="editorial"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                label="Editorial"
+                variant="outlined"
+                size="small"
+              />
+            )}
+          />
+          <p>{errors.editorial?.message}</p>
+        </div>
+        <div>
+          <Controller
+            name="short_bio"
+            control={control}
+            defaultValue=""
+            render={({ field }) => (
+              <TextField
+                {...field}
+                multiline
+                maxRows={6}
+                label="Biografía corta"
+                variant="outlined"
+                size="small"
+              />
+            )}
+          />
+          <p>{errors.short_bio?.message}</p>
         </div>
 
         <p>{result}</p>
@@ -98,14 +195,16 @@ const RegisterPage = () => {
           </div>
         )}
 
-        {errors.length > 0 && (
+        {errorsList.length > 0 && (
           <ul>
-            {errors.map((error) => (
+            {errorsList.map((error) => (
               <li key={error}>{error}</li>
             ))}
           </ul>
         )}
-        <input type="submit" />
+        <Button type="submit" color="primary" variant="contained">
+          Registrarme
+        </Button>
       </form>
     </div>
   );
