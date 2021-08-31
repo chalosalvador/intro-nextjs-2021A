@@ -1,10 +1,11 @@
 import { useForm, Controller } from "react-hook-form";
 import { useState } from "react";
-import User from "../api/user";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { Button, Link as MuiLink, TextField } from "@material-ui/core";
 import Link from "next/link";
+import { useAuth } from "@/contexts/auth";
+import withoutAuth from "../hocs/withoutAuth";
 
 const schema = yup.object().shape({
   name: yup.string().required("Este campo obligatorio"),
@@ -36,6 +37,7 @@ const RegisterPage = () => {
   const [result, setResult] = useState("");
   const [errorsList, setErrorsList] = useState([]);
   const [userInfo, setUserInfo] = useState(null);
+  const { register } = useAuth();
 
   const onSubmit = async (formData) => {
     setUserInfo(null);
@@ -46,7 +48,7 @@ const RegisterPage = () => {
         ...formData,
         role: "ROLE_USER",
       };
-      const response = await User.register(userData);
+      const response = await register(userData);
       console.log("response", response);
       setUserInfo(response.data);
 
@@ -210,4 +212,4 @@ const RegisterPage = () => {
   );
 };
 
-export default RegisterPage;
+export default withoutAuth(RegisterPage);
