@@ -1,20 +1,23 @@
-import Head from 'next/head';
-import Link from 'next/link';
-
+import Head from "next/head";
+import Link from "next/link";
 
 const HolaPage = () => {
   return (
     <>
-    <Head>
-      <title>Hola Mundo!</title>
-    </Head>
+      <Head>
+        <title>Hola Mundo!</title>
+      </Head>
 
-    <div>
-      <p>Hola mundo!</p>
+      <div>
+        <p>Hola mundo!</p>
 
-      <p><a href='/'>Regresar al index</a></p>
-      <p><Link href='/'>Regresar al index con Link</Link></p>
-    </div>
+        <p>
+          <a href="/">Regresar al index</a>
+        </p>
+        <p>
+          <Link href="/">Regresar al index con Link</Link>
+        </p>
+      </div>
     </>
   );
 };

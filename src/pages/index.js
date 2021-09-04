@@ -2,6 +2,7 @@ import Head from "next/head";
 import Link from "next/link";
 import Image from "next/image";
 import lemon from "../../public/images/lemon.jpg";
+import { Subtitle, Title } from "@/styles/home";
 
 export default function Home() {
   return (
@@ -12,6 +13,8 @@ export default function Home() {
       </Head>
 
       <main>
+        <Title>Blog de Chalo</Title>
+        <Subtitle>Es es el subtítulo de mi blog</Subtitle>
         <p>Esta es la nueva funcionalidad.</p>
         <p>Este es mi index.</p>
 
